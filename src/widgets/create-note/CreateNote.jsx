@@ -1,13 +1,20 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextInput from "../../shared/components/text-input/TextInput";
 import Button from "../../shared/components/button/Button";
 import RecordButton from "../../shared/components/record-button/RecordButton";
 import TextArea from "../../shared/components/textarea/TextArea";
 
-function CreateNote({ onCreate }) {
+function CreateNote({ noteToEdit, onUpdate, onCreate }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (noteToEdit) {
+      setTitle(noteToEdit.title);
+      setDescription(noteToEdit.description);
+    }
+  }, [noteToEdit]);
 
   const changeTitle = useCallback((value) => setTitle(value), []);
 
@@ -15,6 +22,15 @@ function CreateNote({ onCreate }) {
 
   const handleCreate = async () => {
     await onCreate({ title, description });
+    resetForm();
+  };
+
+  const handleUpdate = async () => {
+    await onUpdate({ ...noteToEdit, title, description });
+    resetForm();
+  };
+
+  const resetForm = () => {
     setTitle("");
     setDescription("");
   };
@@ -39,9 +55,17 @@ function CreateNote({ onCreate }) {
           <RecordButton />
         </Box>
       </Box>
-      <Button sx={{ width: "100%" }} onClick={handleCreate}>
-        Create
-      </Button>
+      {!noteToEdit && (
+        <Button sx={{ width: "100%" }} onClick={handleCreate}>
+          Create
+        </Button>
+      )}
+
+      {noteToEdit && (
+        <Button sx={{ width: "100%" }} onClick={handleUpdate}>
+          Update
+        </Button>
+      )}
     </Box>
   );
 }

@@ -45,6 +45,39 @@ class DB {
     });
   }
 
+  async update(newData) {
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], "readwrite");
+      const objectStore = transaction.objectStore(this.storeName);
+
+      const getRequest = objectStore.get(newData.id);
+
+      getRequest.onerror = () => {
+        reject(new Error("Failed to get item from store"));
+      };
+
+      getRequest.onsuccess = () => {
+        const itemToUpdate = getRequest.result;
+        if (!itemToUpdate) {
+          reject(new Error("Item not found in store"));
+          return;
+        }
+
+        const updatedItem = { ...itemToUpdate, ...newData };
+
+        const updateRequest = objectStore.put(updatedItem);
+
+        updateRequest.onerror = () => {
+          reject(new Error("Failed to update item in store"));
+        };
+
+        updateRequest.onsuccess = () => {
+          resolve(updatedItem);
+        };
+      };
+    });
+  }
+
   async get(id) {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], "readonly");

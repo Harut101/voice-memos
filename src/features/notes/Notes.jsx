@@ -10,6 +10,7 @@ const db = new DB("database", "notes");
 function Notes() {
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [noteToEdit, setNoteToEdit] = useState(null);
 
   useEffect(() => {
     async function initDB() {
@@ -30,21 +31,44 @@ function Notes() {
 
   const createNote = useCallback(
     async (note) => {
-      const result = await db.add(note);
-
-      setNotes([...notes, { id: result, ...note }]);
+      try {
+        const result = await db.add(note);
+        setNotes([...notes, { id: result, ...note }]);
+      } catch (e) {
+        console.log(e);
+      }
     },
     [notes]
   );
 
   const removeNote = useCallback(
     async (note) => {
-      await db.delete(note.id);
-      const newList = notes.filter((n) => n.id !== note.id);
-      setNotes(newList);
+      try {
+        await db.delete(note.id);
+        const newList = notes.filter((n) => n.id !== note.id);
+        setNotes(newList);
+      } catch (e) {
+        console.log(e);
+      }
     },
     [notes]
   );
+
+  const updateNote = useCallback(
+    async (note) => {
+      try {
+        const newNote = await db.update(note);
+        const newList = notes.filter((n) => n.id !== note.id);
+        setNotes([...newList, newNote]);
+        setNoteToEdit(false);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [notes]
+  );
+
+  const onEditNote = useCallback((note) => setNoteToEdit(note), []);
 
   if (loading) {
     return <h1>LOADING...</h1>;
@@ -69,10 +93,18 @@ function Notes() {
         >
           Create Your Note
         </Typography>
-        <CreateNote onCreate={createNote} />
+        <CreateNote
+          onUpdate={updateNote}
+          onCreate={createNote}
+          noteToEdit={noteToEdit}
+        />
       </Box>
       <Box sx={{ width: "70%", height: "100vh", padding: "40px" }}>
-        <NoteGrid notes={notes} removeNote={removeNote} />
+        <NoteGrid
+          notes={notes}
+          removeNote={removeNote}
+          onEditNote={onEditNote}
+        />
       </Box>
     </Box>
   );
