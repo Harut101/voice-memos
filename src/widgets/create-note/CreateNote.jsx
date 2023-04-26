@@ -4,8 +4,10 @@ import TextInput from "../../shared/components/text-input/TextInput";
 import Button from "../../shared/components/button/Button";
 import RecordButton from "../../shared/components/record-button/RecordButton";
 import TextArea from "../../shared/components/textarea/TextArea";
+import useSpeechRecognition from "../../shared/hooks/useSpeechRecognition";
 
 function CreateNote({ noteToEdit, onUpdate, onCreate }) {
+  const { text, recording, start, stop } = useSpeechRecognition();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -15,6 +17,12 @@ function CreateNote({ noteToEdit, onUpdate, onCreate }) {
       setDescription(noteToEdit.description);
     }
   }, [noteToEdit]);
+
+  useEffect(() => {
+    if (text) {
+      setDescription(text);
+    }
+  }, [text]);
 
   const changeTitle = useCallback((value) => setTitle(value), []);
 
@@ -35,6 +43,17 @@ function CreateNote({ noteToEdit, onUpdate, onCreate }) {
     setDescription("");
   };
 
+  const handleRecord = useCallback(
+    (isRecord) => {
+      if (isRecord) {
+        start();
+      } else {
+        stop();
+      }
+    },
+    [start, stop]
+  );
+
   return (
     <Box>
       <TextInput label="Title" value={title} onChange={changeTitle} />
@@ -47,22 +66,30 @@ function CreateNote({ noteToEdit, onUpdate, onCreate }) {
         }}
       >
         <TextArea
-          label="Description"
+          label="Type or Record Description"
           value={description}
           onChange={changeDescription}
         />
         <Box sx={{ position: "absolute", bottom: 0, right: 0 }}>
-          <RecordButton />
+          <RecordButton isRecording={recording} onClick={handleRecord} />
         </Box>
       </Box>
       {!noteToEdit && (
-        <Button sx={{ width: "100%" }} onClick={handleCreate}>
+        <Button
+          sx={{ width: "100%" }}
+          disabled={!description}
+          onClick={handleCreate}
+        >
           Create
         </Button>
       )}
 
       {noteToEdit && (
-        <Button sx={{ width: "100%" }} onClick={handleUpdate}>
+        <Button
+          sx={{ width: "100%" }}
+          disabled={!description}
+          onClick={handleUpdate}
+        >
           Update
         </Button>
       )}

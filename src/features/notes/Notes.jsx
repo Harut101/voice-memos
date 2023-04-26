@@ -58,8 +58,16 @@ function Notes() {
     async (note) => {
       try {
         const newNote = await db.update(note);
-        const newList = notes.filter((n) => n.id !== note.id);
-        setNotes([...newList, newNote]);
+        const noteIndex = notes.findIndex((n) => n.id === note.id);
+        const updatedNote = { ...notes[noteIndex], ...newNote };
+
+        const newNotes = [
+          ...notes.slice(0, noteIndex),
+          updatedNote,
+          ...notes.slice(noteIndex + 1),
+        ];
+
+        setNotes(newNotes);
         setNoteToEdit(false);
       } catch (e) {
         console.log(e);

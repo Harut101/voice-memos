@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 
-function RecordButton({ onClick }) {
+function RecordButton({ isRecording, onClick }) {
   const [recording, setRecording] = useState(false);
 
-  const handleClick = () => {
-    setRecording(!recording);
-    onClick(!recording);
-  };
+  useEffect(() => setRecording(isRecording), [isRecording]);
+
+  const handleClick = () => onClick(!recording);
 
   return (
     <IconButton onClick={handleClick}>
