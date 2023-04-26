@@ -20,7 +20,10 @@ class DB {
 
       request.onupgradeneeded = (event) => {
         const db = event.target.result;
-        db.createObjectStore(this.storeName, { keyPath: "id" });
+        db.createObjectStore(this.storeName, {
+          keyPath: "id",
+          autoIncrement: true,
+        });
       };
     });
   }

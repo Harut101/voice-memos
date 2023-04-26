@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import NoteCard from "../../shared/note-card/NoteCard";
 
-function NoteGrid({ notes }) {
+function NoteGrid({ notes, removeNote }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid
@@ -12,7 +12,7 @@ function NoteGrid({ notes }) {
       >
         {notes.map((note) => (
           <Grid item xs={2} sm={4} md={4} key={note.id}>
-            <NoteCard {...note} />
+            <NoteCard {...note} onDelete={removeNote} />
           </Grid>
         ))}
       </Grid>
