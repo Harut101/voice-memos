@@ -1,9 +1,9 @@
-import Memos from "./features/memos/Memos";
+import Notes from "./features/notes/Notes";
 
 function App() {
   return (
     <div className="App">
-      <Memos />
+      <Notes />
     </div>
   );
 }

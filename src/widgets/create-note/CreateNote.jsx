@@ -4,7 +4,7 @@ import Button from "../../shared/components/button/Button";
 import RecordButton from "../../shared/components/record-button/RecordButton";
 import TextArea from "../../shared/components/textarea/TextArea";
 
-function CreateMemo() {
+function CreateNote() {
   return (
     <Box>
       <TextInput label="Title" />
@@ -28,4 +28,4 @@ function CreateMemo() {
   );
 }
 
-export default CreateMemo;
+export default CreateNote;
