@@ -30,9 +30,9 @@ function CreateNote({ noteToEdit, onUpdate, onCreate }) {
     }
   }, [text]);
 
-  const changeTitle = useCallback((value) => setTitle(value), []);
+  const changeTitle = (value) => setTitle(value);
 
-  const changeDescription = useCallback((value) => setDescription(value), []);
+  const changeDescription = (value) => setDescription(value);
 
   const handleCreate = async () => {
     await onCreate({ title, description });

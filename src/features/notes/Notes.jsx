@@ -29,52 +29,43 @@ function Notes() {
     initDB();
   }, []);
 
-  const createNote = useCallback(
-    async (note) => {
-      try {
-        const result = await db.add(note);
-        setNotes([...notes, { id: result, ...note }]);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    [notes]
-  );
+  const createNote = async (note) => {
+    try {
+      const result = await db.add(note);
+      setNotes([...notes, { id: result, ...note }]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  const removeNote = useCallback(
-    async (note) => {
-      try {
-        await db.delete(note.id);
-        const newList = notes.filter((n) => n.id !== note.id);
-        setNotes(newList);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    [notes]
-  );
+  const removeNote = async (note) => {
+    try {
+      await db.delete(note.id);
+      const newList = notes.filter((n) => n.id !== note.id);
+      setNotes(newList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  const updateNote = useCallback(
-    async (note) => {
-      try {
-        const newNote = await db.update(note);
-        const noteIndex = notes.findIndex((n) => n.id === note.id);
-        const updatedNote = { ...notes[noteIndex], ...newNote };
+  const updateNote = async (note) => {
+    try {
+      const newNote = await db.update(note);
+      const noteIndex = notes.findIndex((n) => n.id === note.id);
+      const updatedNote = { ...notes[noteIndex], ...newNote };
 
-        const newNotes = [
-          ...notes.slice(0, noteIndex),
-          updatedNote,
-          ...notes.slice(noteIndex + 1),
-        ];
+      const newNotes = [
+        ...notes.slice(0, noteIndex),
+        updatedNote,
+        ...notes.slice(noteIndex + 1),
+      ];
 
-        setNotes(newNotes);
-        setNoteToEdit(false);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    [notes]
-  );
+      setNotes(newNotes);
+      setNoteToEdit(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const onEditNote = useCallback((note) => setNoteToEdit(note), []);
 
