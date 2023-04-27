@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 
-function RecordButton({ isRecording, onClick }) {
+function RecordButton({ isInitializing, isRecording, onClick }) {
   const [recording, setRecording] = useState(false);
+  const color = isInitializing ? "#e09209" : recording ? "red" : "";
 
   useEffect(() => setRecording(isRecording), [isRecording]);
 
@@ -11,7 +12,7 @@ function RecordButton({ isRecording, onClick }) {
 
   return (
     <IconButton onClick={handleClick}>
-      <KeyboardVoiceIcon sx={{ color: recording ? "red" : "" }} />
+      <KeyboardVoiceIcon sx={{ color }} />
     </IconButton>
   );
 }

@@ -5,6 +5,7 @@ const speechRecognition = new SpeechRecognition();
 
 function useSpeechRecognition() {
   const [text, setText] = useState("");
+  const [initializing, setInitializing] = useState(false);
   const [recording, setRecording] = useState(false);
 
   const start = useCallback(() => {
@@ -12,14 +13,20 @@ function useSpeechRecognition() {
 
     recognition.start();
 
+    recognition.onaudiostart = () => {
+      setRecording(true);
+      setInitializing(false);
+    };
+
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setText(transcript);
       setRecording(false);
+      setInitializing(false);
       recognition.stop();
     };
 
-    setRecording(true);
+    setInitializing(true);
   }, []);
 
   const stop = useCallback(() => {
@@ -30,6 +37,7 @@ function useSpeechRecognition() {
 
   return {
     text,
+    initializing,
     recording,
     start,
     stop,

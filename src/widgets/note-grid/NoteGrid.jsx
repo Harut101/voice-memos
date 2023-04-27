@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import NoteCard from "../../shared/note-card/NoteCard";
+import NoteCard from "../../shared/components/note-card/NoteCard";
 
 function NoteGrid({ notes, removeNote, onEditNote }) {
   return (

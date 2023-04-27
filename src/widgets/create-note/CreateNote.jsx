@@ -7,9 +7,15 @@ import TextArea from "../../shared/components/textarea/TextArea";
 import useSpeechRecognition from "../../shared/hooks/useSpeechRecognition";
 
 function CreateNote({ noteToEdit, onUpdate, onCreate }) {
-  const { text, recording, start, stop } = useSpeechRecognition();
+  const { text, initializing, recording, start, stop } = useSpeechRecognition();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const descTitle = initializing
+    ? "Wait..."
+    : recording
+    ? "Start Talking"
+    : "Type or Record Description";
 
   useEffect(() => {
     if (noteToEdit) {
@@ -66,12 +72,16 @@ function CreateNote({ noteToEdit, onUpdate, onCreate }) {
         }}
       >
         <TextArea
-          label="Type or Record Description"
+          label={descTitle}
           value={description}
           onChange={changeDescription}
         />
         <Box sx={{ position: "absolute", bottom: 0, right: 0 }}>
-          <RecordButton isRecording={recording} onClick={handleRecord} />
+          <RecordButton
+            isInitializing={initializing}
+            isRecording={recording}
+            onClick={handleRecord}
+          />
         </Box>
       </Box>
       {!noteToEdit && (
